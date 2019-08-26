@@ -6,7 +6,7 @@ import java.util.Scanner;
  * Class for Duke.
  */
 public class Duke {
-    private static List<String> tasks = new ArrayList<String>();
+    private static List<Task> tasks = new ArrayList<Task>();
 
     /**
      * Main method for duke.
@@ -43,8 +43,15 @@ public class Duke {
             output = taskString();
             break;
         default:
-            output = "     added: " + userInput + "\n";
-            tasks.add(userInput);
+            if (userInput.substring(0,4).equals("done")){
+                int taskIndex = Integer.parseInt(userInput.substring(5)) - 1;
+                tasks.get(taskIndex).setCompleted(true);
+                output = "     Nice! I've marked this task as done:\n"
+                        + "       [✓] " + tasks.get(taskIndex).getDescription() + "\n";
+            } else {
+                output = "     added: " + userInput + "\n";
+                tasks.add(new Task(userInput));
+            }
         }
         finalOutput =
                   "    ____________________________________________________________\n"
@@ -60,7 +67,8 @@ public class Duke {
             temp += "     There is no task.\n";
         }
         for (int i = 0; i < tasks.size(); i++) {
-            temp += ( "     " + (i + 1) + ". " + tasks.get(i) + "\n" );
+            temp += ( "     " + (i + 1) + ".[" + tasks.get(i).getStatusIcon() + "] "
+                    + tasks.get(i).getDescription() + "\n" );
         }
         return temp;
     }
