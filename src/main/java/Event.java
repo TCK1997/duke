@@ -7,15 +7,16 @@ public class Event extends Task {
         this.at = at;
     }
 
+    @Override
+    public String getTaskLetter() {
+        return "E";
+    }
+
     public String getAt() {
         return at;
     }
 
     public void setAt(String at) {
         this.at = at;
-    }
-
-    public String getTaskLetter() {
-        return "E";
     }
 }

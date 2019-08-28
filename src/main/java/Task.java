@@ -8,7 +8,7 @@ public class Task {
     }
 
     public String getStatusIcon() {
-        return (isCompleted ? "✓" : "X");
+        return (isCompleted ? "✓" : "✗");
     }
 
     String getDescription() {
@@ -17,5 +17,9 @@ public class Task {
 
     public void setCompleted(boolean isCompleted) {
         this.isCompleted = isCompleted;
+    }
+
+    public String getTaskLetter() {
+        return "";
     }
 }

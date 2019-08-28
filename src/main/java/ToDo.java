@@ -4,8 +4,8 @@ public class ToDo extends Task {
         super(description);
     }
 
+    @Override
     public String getTaskLetter() {
         return "T";
     }
-
 }
