@@ -43,7 +43,7 @@ public class Duke {
             output = taskString();
             break;
         default:
-            if (userInput.substring(0,4).equals("done")){
+            if (userInput.substring(0,4).equals("done")) {
                 int taskIndex = Integer.parseInt(userInput.substring(5)) - 1;
                 tasks.get(taskIndex).setCompleted(true);
                 output = "     Nice! I've marked this task as done:\n"
@@ -61,14 +61,14 @@ public class Duke {
         return stop;
     }
 
-    private static String taskString(){
+    private static String taskString() {
         String temp = "";
-        if (tasks.isEmpty()){
+        if (tasks.isEmpty()) {
             temp += "     There is no task.\n";
         }
         for (int i = 0; i < tasks.size(); i++) {
-            temp += ( "     " + (i + 1) + ".[" + tasks.get(i).getStatusIcon() + "] "
-                    + tasks.get(i).getDescription() + "\n" );
+            temp += ("     " + (i + 1) + ".[" + tasks.get(i).getStatusIcon() + "] "
+                    + tasks.get(i).getDescription() + "\n");
         }
         return temp;
     }
