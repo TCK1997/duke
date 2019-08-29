@@ -24,60 +24,109 @@ public class Duke {
     private static void runDuke() {
         Scanner userInput = new Scanner(System.in);
         while (true) {
-            if (parseUserInput(userInput.nextLine())) {
-                break;
+            try {
+                if (parseUserInput(userInput.nextLine().trim())) {
+                    break;
+                }
+            } catch (Exception e) {
+                String errorOutput =
+                          "    ____________________________________________________________\n"
+                        + "     ☹ Unexpected Error\n"
+                        + "     " + e.toString() + "\n"
+                        + "    ____________________________________________________________\n";
+                System.out.println(errorOutput);
             }
         }
     }
 
+
     private static boolean parseUserInput(String userInput) {
         String output = null;
         String finalOutput;
-        String description;
-        String firstWord = userInput.contains(" ") ? userInput.split(" ")[0] : userInput;
+        String description = null;
         boolean stop = false;
-        switch (firstWord) {
-        case "bye":
-            output = "     Bye. Hope to see you again soon!\n";
-            stop = true;
-            break;
-        case "list":
-            output = taskString();
-            break;
-        case "done":
-            int taskIndex = Integer.parseInt(userInput.substring(5)) - 1;
-            tasks.get(taskIndex).setCompleted(true);
-            output = "     Nice! I've marked this task as done:\n"
-                    + "       [✓] " + tasks.get(taskIndex).getDescription() + "\n";
-            break;
-        case "todo":
-            description = userInput.substring(5);
-            tasks.add(new ToDo(description));
-            output =  "     Got it. I've added this task:\n"
-                    + "       [T][✗] " + description + "\n"
-                    + "     Now you have " + tasks.size() + " task"
-                    + (tasks.size() == 1 ? "" : "s") + " in the list\n";
-            break;
-        case "deadline":
-            description = userInput.substring(9, userInput.indexOf("/by") - 1);
-            String by = userInput.substring(userInput.indexOf("/by") + 4);
-            tasks.add(new Deadline(description, by));
-            output =  "     Got it. I've added this task:\n"
-                    + "       [D][✗] " + description + " (by: " + by + ")" + "\n"
-                    + "     Now you have " + tasks.size() + " task"
-                    + (tasks.size() == 1 ? "" : "s") + " in the list\n";
-            break;
-        case "event":
-            description = userInput.substring(6, userInput.indexOf("/at") - 1);
-            String at = userInput.substring(userInput.indexOf("/at") + 4);
-            tasks.add(new Event(description, at));
-            output =  "     Got it. I've added this task:\n"
-                    + "       [E][✗] " + description + " (at: " + at + ")" + "\n"
-                    + "     Now you have " + tasks.size() + " task"
-                    + (tasks.size() == 1 ? "" : "s") + " in the list\n";
-            break;
-        default:
-            output = "     Command not recognised\n";
+        if (userInput.isBlank()) {
+            output = "     ☹ Empty command.\n";
+        } else {
+            String firstWord = userInput.contains(" ") ? userInput.split(" ")[0] : userInput;
+            switch (firstWord) {
+            case "bye":
+                output = "     Bye. Hope to see you again soon!\n";
+                stop = true;
+                break;
+            case "list":
+                output = taskString();
+                break;
+            case "done":
+                if (userInput.length() < 6) {
+                    output = "     ☹ OOPS!!! Please specify which task.\n";
+                    break;
+                }
+                try {
+                    int taskIndex = Integer.parseInt(userInput.substring(5)) - 1;
+                    if (taskIndex >= tasks.size()) {
+                        output = "     ☹ OOPS!!! There is no such task\n";
+                        break;
+                    } else {
+                        tasks.get(taskIndex).setCompleted(true);
+                    }
+                    output =  "     Nice! I've marked this task as done:\n"
+                            + "       [✓] " + tasks.get(taskIndex).getDescription() + "\n";
+                } catch (NumberFormatException ex) {
+                    output = "     ☹ OOPS!!! Please input a number to indicate which task.\n";
+                }
+                break;
+            case "todo":
+                if (userInput.length() < 6) {
+                    output = "     ☹ OOPS!!! The description of a todo cannot be empty.\n";
+                    break;
+                }
+                description = userInput.substring(5);
+                tasks.add(new ToDo(description));
+                output =  "     Got it. I've added this task:\n"
+                        + "       [T][✗] " + description + "\n"
+                        + "     Now you have " + tasks.size() + " task"
+                        + (tasks.size() == 1 ? "" : "s") + " in the list\n";
+                break;
+            case "deadline":
+                String by = null;
+                try {
+                    description = userInput.substring(9, userInput.indexOf("/by") - 1);
+                    by = userInput.substring(userInput.indexOf("/by") + 4);
+                    if (description.isBlank() || by.isBlank()) {
+                        throw new DukeException("Description or Date is blank.\n");
+                    }
+                } catch (StringIndexOutOfBoundsException | DukeException e) {
+                    output = "     ☹ OOPS!!! The description or date of a deadline cannot be empty.\n";
+                    break;
+                }
+                tasks.add(new Deadline(description, by));
+                output =  "     Got it. I've added this task:\n"
+                        + "       [D][✗] " + description + " (by: " + by + ")" + "\n"
+                        + "     Now you have " + tasks.size() + " task"
+                        + (tasks.size() == 1 ? "" : "s") + " in the list\n";
+                break;
+            case "event":
+                String at = null;
+                try {
+                    description = userInput.substring(6, userInput.indexOf("/at") - 1);
+                    at = userInput.substring(userInput.indexOf("/at") + 4);
+                    if (description.isBlank() || at.isBlank()) {
+                        throw new DukeException("Description or Date is blank.\n");
+                    }
+                } catch (StringIndexOutOfBoundsException | DukeException e) {
+                    output = "     ☹ OOPS!!! The description or date of a event cannot be empty.\n";
+                    break;
+                }
+                tasks.add(new Event(description, at));
+                output =  "     Got it. I've added this task:\n"
+                        + "       [E][✗] " + description + " (at: " + at + ")" + "\n"
+                        + "     Now you have " + tasks.size() + " task"
+                        + (tasks.size() == 1 ? "" : "s") + " in the list\n";
+                break;
+            default:
+                output = "     ☹ OOPS!!! I'm sorry, but I don't know what that means :-(\n";
+            }
         }
         finalOutput =
                   "    ____________________________________________________________\n"
@@ -101,9 +150,9 @@ public class Duke {
             if (currentTask instanceof ToDo) {
                 temp += "\n";
             } else if (currentTask instanceof Deadline) {
-                temp += " (by: " + ((Deadline) currentTask).getBy()  + ")\n";
+                temp += " (by: " + ((Deadline) currentTask).getBy() + ")\n";
             } else if (currentTask instanceof Event) {
-                temp += " (by: " + ((Event) currentTask).getAt()  + ")\n";
+                temp += " (by: " + ((Event) currentTask).getAt() + ")\n";
             }
         }
         return temp;
