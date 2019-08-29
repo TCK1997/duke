@@ -1,13 +1,16 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Event extends Task {
 
-    protected String at;
+    protected LocalDateTime at;
 
-    public Event(String description, String at) {
+    public Event(String description, LocalDateTime at) {
         super(description);
         this.at = at;
     }
 
-    public Event(String description, boolean isCompleted, String at) {
+    public Event(String description, boolean isCompleted, LocalDateTime at) {
         super(description, isCompleted);
         this.at = at;
     }
@@ -26,10 +29,15 @@ public class Event extends Task {
     }
 
     public String getAt() {
-        return at;
+        return at.toString();
     }
 
-    public void setAt(String at) {
+    public String getAtFormat() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM y, hh:mm a");
+        return at.format(formatter);
+    }
+
+    public void setAt(LocalDateTime at) {
         this.at = at;
     }
 }

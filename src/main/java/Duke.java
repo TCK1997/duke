@@ -1,6 +1,10 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -48,6 +52,7 @@ public class Duke {
         String output = null;
         String finalOutput;
         String description = null;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM y, hh:mm a");
         boolean stop = false;
         boolean taskChange = false;
         if (userInput.isBlank()) {
@@ -96,40 +101,48 @@ public class Duke {
                         + (tasks.size() == 1 ? "" : "s") + " in the list\n";
                 break;
             case "deadline":
-                String by = null;
+                LocalDateTime by = null;
                 try {
                     description = userInput.substring(9, userInput.indexOf("/by") - 1);
-                    by = userInput.substring(userInput.indexOf("/by") + 4);
-                    if (description.isBlank() || by.isBlank()) {
+                    String temp = userInput.substring(userInput.indexOf("/by") + 4);
+                    if (description.isBlank() || temp.isBlank()) {
                         throw new DukeException("Description or Date is blank.\n");
                     }
+                    by = parseDateTime(temp);
                 } catch (StringIndexOutOfBoundsException | DukeException e) {
                     output = "     ☹ OOPS!!! The description or date of a deadline cannot be empty.\n";
+                    break;
+                } catch (DateTimeParseException e) {
+                    output = "     ☹ OOPS!!! The date is not formatted properly.\n";
                     break;
                 }
                 tasks.add(new Deadline(description, by));
                 taskChange = true;
                 output =  "     Got it. I've added this task:\n"
-                        + "       [D][✗] " + description + " (by: " + by + ")" + "\n"
+                        + "       [D][✗] " + description + " (by: " + by.format(formatter) + ")" + "\n"
                         + "     Now you have " + tasks.size() + " task"
                         + (tasks.size() == 1 ? "" : "s") + " in the list\n";
                 break;
             case "event":
-                String at = null;
+                LocalDateTime at = null;
                 try {
                     description = userInput.substring(6, userInput.indexOf("/at") - 1);
-                    at = userInput.substring(userInput.indexOf("/at") + 4);
-                    if (description.isBlank() || at.isBlank()) {
+                    String temp = userInput.substring(userInput.indexOf("/at") + 4);
+                    if (description.isBlank() || temp.isBlank()) {
                         throw new DukeException("Description or Date is blank.\n");
                     }
+                    at = parseDateTime(temp);
                 } catch (StringIndexOutOfBoundsException | DukeException e) {
                     output = "     ☹ OOPS!!! The description or date of a event cannot be empty.\n";
+                    break;
+                } catch (DateTimeParseException e) {
+                    output = "     ☹ OOPS!!! The date is not formatted properly.\n";
                     break;
                 }
                 tasks.add(new Event(description, at));
                 taskChange = true;
                 output =  "     Got it. I've added this task:\n"
-                        + "       [E][✗] " + description + " (at: " + at + ")" + "\n"
+                        + "       [E][✗] " + description + " (at: " + at.format(formatter) + ")" + "\n"
                         + "     Now you have " + tasks.size() + " task"
                         + (tasks.size() == 1 ? "" : "s") + " in the list\n";
                 break;
@@ -162,9 +175,9 @@ public class Duke {
             if (currentTask instanceof ToDo) {
                 temp += "\n";
             } else if (currentTask instanceof Deadline) {
-                temp += " (by: " + ((Deadline) currentTask).getBy() + ")\n";
+                temp += " (by: " + ((Deadline) currentTask).getByFormat() + ")\n";
             } else if (currentTask instanceof Event) {
-                temp += " (at: " + ((Event) currentTask).getAt() + ")\n";
+                temp += " (at: " + ((Event) currentTask).getAtFormat() + ")\n";
             }
         }
         return temp;
@@ -217,14 +230,34 @@ public class Duke {
             tasks.add(new ToDo(line[2], Boolean.parseBoolean(line[1])));
             break;
         case "E":
-            tasks.add(new Event(line[2], Boolean.parseBoolean(line[1]), line[3]));
+            tasks.add(new Event(line[2], Boolean.parseBoolean(line[1]), LocalDateTime.parse(line[3])));
             break;
         case "D":
-            tasks.add(new Deadline(line[2], Boolean.parseBoolean(line[1]), line[3]));
+            tasks.add(new Deadline(line[2], Boolean.parseBoolean(line[1]), LocalDateTime.parse(line[3])));
             break;
         default:
             System.out.println("Error loading task in file: Not all task are load properly.");
         }
     }
 
+    private static LocalDateTime parseDateTime(String input) {
+        String[] dateTimeStrings = {
+            "[[[d][dd][-][ ][/][,][MMMM][MMM][M][-][ ][/][,][uuuu][uu]] [[h][hh][H][HH][:][ ][mm][ ][a]]]",
+            "[[[d][dd][-][ ][/][,][MMMM][MMM][M][-][ ][/][,][uuuu][uu]] [hh[ ][:][mm][ ]a][[hhmm a][HHmm][HH mm]]",
+            "[[[ddMMyyyy][ddMMuu][ddMMuuuu][dMMMMuu][dMMMMuuuu]] [hh[ ][:][mm][ ]a][HHmm][HH mm][HH:mm]"
+        };
+        for (int i = 0; i < dateTimeStrings.length; i++) {
+            try {
+                input.replace("am", "AM");
+                input.replace("pm", "PM");
+                DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                        .parseCaseInsensitive().appendPattern(dateTimeStrings[i]).toFormatter();
+                LocalDateTime output = LocalDateTime.parse(input, formatter);
+                return output;
+            } catch (DateTimeParseException e) {
+                assert true;
+            }
+        }
+        return null;
+    }
 }
