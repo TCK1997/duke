@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -12,6 +15,7 @@ public class Duke {
      * Main method for duke.
      */
     public static void main(String[] args) {
+        load();
         String startUp =
                   "    ____________________________________________________________\n"
                 + "     Hello! I'm Duke\n"
@@ -45,6 +49,7 @@ public class Duke {
         String finalOutput;
         String description = null;
         boolean stop = false;
+        boolean taskChange = false;
         if (userInput.isBlank()) {
             output = "     ☹ Empty command.\n";
         } else {
@@ -69,6 +74,7 @@ public class Duke {
                         break;
                     } else {
                         tasks.get(taskIndex).setCompleted(true);
+                        taskChange = true;
                     }
                     output =  "     Nice! I've marked this task as done:\n"
                             + "       [✓] " + tasks.get(taskIndex).getDescription() + "\n";
@@ -83,6 +89,7 @@ public class Duke {
                 }
                 description = userInput.substring(5);
                 tasks.add(new ToDo(description));
+                taskChange = true;
                 output =  "     Got it. I've added this task:\n"
                         + "       [T][✗] " + description + "\n"
                         + "     Now you have " + tasks.size() + " task"
@@ -101,6 +108,7 @@ public class Duke {
                     break;
                 }
                 tasks.add(new Deadline(description, by));
+                taskChange = true;
                 output =  "     Got it. I've added this task:\n"
                         + "       [D][✗] " + description + " (by: " + by + ")" + "\n"
                         + "     Now you have " + tasks.size() + " task"
@@ -119,6 +127,7 @@ public class Duke {
                     break;
                 }
                 tasks.add(new Event(description, at));
+                taskChange = true;
                 output =  "     Got it. I've added this task:\n"
                         + "       [E][✗] " + description + " (at: " + at + ")" + "\n"
                         + "     Now you have " + tasks.size() + " task"
@@ -133,6 +142,9 @@ public class Duke {
                 + output
                 + "    ____________________________________________________________\n";
         System.out.println(finalOutput);
+        if (taskChange) {
+            save();
+        }
         return stop;
     }
 
@@ -152,9 +164,67 @@ public class Duke {
             } else if (currentTask instanceof Deadline) {
                 temp += " (by: " + ((Deadline) currentTask).getBy() + ")\n";
             } else if (currentTask instanceof Event) {
-                temp += " (by: " + ((Event) currentTask).getAt() + ")\n";
+                temp += " (at: " + ((Event) currentTask).getAt() + ")\n";
             }
         }
         return temp;
     }
+
+    private static void save() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    PrintWriter writer = new PrintWriter("state.txt", "UTF-8");
+                    for (int i = 0; i < tasks.size(); i++) {
+                        writer.write(tasks.get(i).saveString());
+                    }
+                    writer.close();
+                } catch (Exception e) {
+                    String errorOutput =
+                              "    ____________________________________________________________\n"
+                            + "     ☹ Save Error\n"
+                            + "     " + e.toString() + "\n"
+                            + "    ____________________________________________________________\n";
+                    System.out.println(errorOutput);
+                }
+            }
+        }).start();
+    }
+
+    private static void load() {
+        try {
+            Scanner scanner = new Scanner(new File("state.txt"));
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                processLine(line.split(","));
+            }
+        } catch (FileNotFoundException e) {
+            assert true;
+        } catch (Exception e) {
+            String errorOutput =
+                      "    ____________________________________________________________\n"
+                    + "     ☹ Load Error\n"
+                    + "     " + e.toString() + "\n"
+                    + "    ____________________________________________________________\n";
+            System.out.println(errorOutput);
+        }
+    }
+
+    private static void processLine(String[] line) {
+        switch (line[0]) {
+        case "T":
+            tasks.add(new ToDo(line[2], Boolean.parseBoolean(line[1])));
+            break;
+        case "E":
+            tasks.add(new Event(line[2], Boolean.parseBoolean(line[1]), line[3]));
+            break;
+        case "D":
+            tasks.add(new Deadline(line[2], Boolean.parseBoolean(line[1]), line[3]));
+            break;
+        default:
+            System.out.println("Error loading task in file: Not all task are load properly.");
+        }
+    }
+
 }

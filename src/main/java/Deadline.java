@@ -6,6 +6,11 @@ public class Deadline extends Task {
         this.by = by;
     }
 
+    public Deadline(String description, boolean isCompleted, String by) {
+        super(description, isCompleted);
+        this.by = by;
+    }
+
     public void setBy(String by) {
         this.by = by;
     }
@@ -17,5 +22,13 @@ public class Deadline extends Task {
     @Override
     public String getTaskLetter() {
         return "D";
+    }
+
+    @Override
+    public String saveString() {
+        return getTaskLetter() + ","
+                + this.isCompleted + ","
+                + this.description + ","
+                + this.by + "\n";
     }
 }

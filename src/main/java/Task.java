@@ -7,6 +7,11 @@ public class Task {
         this.isCompleted = false;
     }
 
+    public Task(String description, boolean isCompleted) {
+        this.description = description;
+        this.isCompleted = isCompleted;
+    }
+
     public String getStatusIcon() {
         return (isCompleted ? "✓" : "✗");
     }
@@ -21,5 +26,17 @@ public class Task {
 
     public String getTaskLetter() {
         return "";
+    }
+
+    /**
+     * This method would change all it's variable
+     * into a standard string of:
+     * task letter, completed boolean value, description.
+     * @return The string for this particular task
+     */
+    public String saveString() {
+        return getTaskLetter() + ","
+                + this.isCompleted + ","
+                + this.description + "\n";
     }
 }
