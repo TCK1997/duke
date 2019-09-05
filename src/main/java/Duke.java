@@ -170,6 +170,27 @@ public class Duke {
                     output = "     ☹ OOPS!!! Please input a number to indicate which task.\n";
                 }
                 break;
+            case "find":
+                if (userInput.length() < 6) {
+                    output = "     ☹ OOPS!!! The keyword of a find cannot be empty.\n";
+                    break;
+                }
+                String keyword = userInput.substring(5);
+                Boolean foundMatch = false;
+                output = "";
+                for (int i = 0; i < tasks.size(); i++) {
+                    Task currentTask = tasks.get(i);
+                    if (currentTask.matchDescription(keyword)) {
+                        foundMatch = true;
+                        output = getString(output, i, currentTask);
+                    }
+                }
+                if (foundMatch) {
+                    output = "     Here are the matching tasks in your list:\n" + output;
+                } else {
+                    output = "     There is no matching tasks in your list\n";
+                }
+                break;
             default:
                 output = "     ☹ OOPS!!! I'm sorry, but I don't know what that means :-(\n";
             }
@@ -185,6 +206,21 @@ public class Duke {
         return stop;
     }
 
+    private static String getString(String output, int i, Task currentTask) {
+        output += "     " + (i + 1) + ".["
+                + currentTask.getTaskLetter() + "]["
+                + currentTask.getStatusIcon() + "] "
+                + currentTask.getDescription();
+        if (currentTask instanceof ToDo) {
+            output += "\n";
+        } else if (currentTask instanceof Deadline) {
+            output += " (by: " + ((Deadline) currentTask).getByFormat() + ")\n";
+        } else if (currentTask instanceof Event) {
+            output += " (at: " + ((Event) currentTask).getAtFormat() + ")\n";
+        }
+        return output;
+    }
+
     private static String taskString() {
         String temp = "";
         if (tasks.isEmpty()) {
@@ -192,17 +228,7 @@ public class Duke {
         }
         for (int i = 0; i < tasks.size(); i++) {
             Task currentTask = tasks.get(i);
-            temp += "     " + (i + 1) + ".["
-                    + currentTask.getTaskLetter() + "]["
-                    + currentTask.getStatusIcon() + "] "
-                    + currentTask.getDescription();
-            if (currentTask instanceof ToDo) {
-                temp += "\n";
-            } else if (currentTask instanceof Deadline) {
-                temp += " (by: " + ((Deadline) currentTask).getByFormat() + ")\n";
-            } else if (currentTask instanceof Event) {
-                temp += " (at: " + ((Event) currentTask).getAtFormat() + ")\n";
-            }
+            temp = getString(temp, i, currentTask);
         }
         return temp;
     }

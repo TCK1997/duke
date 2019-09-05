@@ -1,0 +1,10 @@
+todo read book
+deadline return book /by 060819 1400
+find stuff
+event project meeting /at 060819 1430
+todo borrow book
+todo submit assignment
+list
+done 2
+find book
+bye

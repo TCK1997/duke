@@ -39,4 +39,8 @@ public class Task {
                 + this.isCompleted + ","
                 + this.description + "\n";
     }
+
+    public Boolean matchDescription(String keyword) {
+        return this.description.contains(keyword);
+    }
 }
