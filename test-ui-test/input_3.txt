@@ -1,0 +1,8 @@
+todo tutorial_1
+todo tutorial_2
+event tutorial /at 050919 1500
+done 1
+done 2
+delete 1
+list
+bye
