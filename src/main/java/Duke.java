@@ -73,16 +73,18 @@ public class Duke {
                     break;
                 }
                 try {
+                    Task task;
                     int taskIndex = Integer.parseInt(userInput.substring(5)) - 1;
                     if (taskIndex >= tasks.size()) {
                         output = "     ☹ OOPS!!! There is no such task\n";
                         break;
                     } else {
-                        tasks.get(taskIndex).setCompleted(true);
+                        task = tasks.get(taskIndex);
+                        task.setCompleted(true);
                         taskChange = true;
                     }
                     output =  "     Nice! I've marked this task as done:\n"
-                            + "       [✓] " + tasks.get(taskIndex).getDescription() + "\n";
+                            + "       [" + task.getTaskLetter() + "][✓] " + task.getDescription() + "\n";
                 } catch (NumberFormatException ex) {
                     output = "     ☹ OOPS!!! Please input a number to indicate which task.\n";
                 }
@@ -145,6 +147,28 @@ public class Duke {
                         + "       [E][✗] " + description + " (at: " + at.format(formatter) + ")" + "\n"
                         + "     Now you have " + tasks.size() + " task"
                         + (tasks.size() == 1 ? "" : "s") + " in the list\n";
+                break;
+            case "delete":
+                if (userInput.length() < 6) {
+                    output = "     ☹ OOPS!!! Please specify which task.\n";
+                    break;
+                }
+                try {
+                    int taskIndex = Integer.parseInt(userInput.substring(5)) - 1;
+                    if (taskIndex >= tasks.size()) {
+                        output = "     ☹ OOPS!!! There is no such task\n";
+                        break;
+                    } else {
+                        Task task = tasks.get(taskIndex);
+                        output = "     Noted. I've removed this task:\n"
+                                + "       [" + task.getTaskLetter() + "][✓] " + task.getDescription() + "\n"
+                                + "     Now you have " + tasks.size() + " task"
+                                + (tasks.size() == 1 ? "" : "s") + " in the list\n";
+                        tasks.remove(taskIndex);
+                    }
+                } catch (NumberFormatException ex) {
+                    output = "     ☹ OOPS!!! Please input a number to indicate which task.\n";
+                }
                 break;
             default:
                 output = "     ☹ OOPS!!! I'm sorry, but I don't know what that means :-(\n";
