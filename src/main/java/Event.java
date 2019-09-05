@@ -28,6 +28,11 @@ public class Event extends Task {
                 + this.at + "\n";
     }
 
+    @Override
+    public String getDate() {
+        return " (at: " + getAtFormat() + ")";
+    }
+
     public String getAt() {
         return at.toString();
     }

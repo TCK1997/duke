@@ -43,4 +43,8 @@ public class Task {
     public Boolean matchDescription(String keyword) {
         return this.description.contains(keyword);
     }
+
+    public String getDate() {
+        return "";
+    }
 }

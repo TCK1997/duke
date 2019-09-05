@@ -39,4 +39,9 @@ public class Deadline extends Task {
                 + this.description + ","
                 + this.by + "\n";
     }
+
+    @Override
+    public String getDate() {
+        return " (by: " + getByFormat() + ")";
+    }
 }
