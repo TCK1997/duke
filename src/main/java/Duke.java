@@ -52,6 +52,11 @@ public class Duke {
         }
     }
 
+    /**
+     * Takes in a array of Command and return true if user wants to exit.
+     * @param parsedCommand
+     * @return boolean where user wants to exit.
+     */
     private boolean runCommand(String[] parsedCommand) {
         Task currentTask;
         switch (parsedCommand[0]) {
@@ -100,6 +105,11 @@ public class Duke {
         return false;
     }
 
+    /**
+     * LocalDateTime parser function: probably should change to a class for better testing.
+     * @param input the input string of the date.
+     * @return return the correct LocalDateTime parsed from input.
+     */
     private static LocalDateTime parseDateTime(String input) {
         String[] dateTimeStrings = {
             "[[[d][dd][-][ ][/][,][MMMM][MMM][M][-][ ][/][,][uuuu][uu]] [[h][hh][H][HH][:][ ][mm][ ][a]]]",

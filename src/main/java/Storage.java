@@ -7,6 +7,10 @@ import java.util.Scanner;
 public class Storage {
     String filepath;
 
+    /**
+     * Create a Storage object with filepath.
+     * @param filepath
+     */
     public Storage(String filepath) {
         this.filepath = filepath;
     }
@@ -58,6 +62,13 @@ public class Storage {
         return taskList;
     }
 
+    /**
+     * Process the line inputted.
+     * @param taskList
+     * @param ui
+     * @param line
+     * @throws DukeException
+     */
     private void processLine(TaskList taskList, Ui ui, String[] line) throws DukeException {
         switch (line[0]) {
         case "T":

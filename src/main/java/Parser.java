@@ -1,10 +1,19 @@
 public class Parser {
     private String userInput;
 
+    /**
+     * Method to create a parser with userInput.
+     * @param userInput
+     */
     public Parser(String userInput) {
         this.userInput = userInput;
     }
 
+    /**
+     * Parse the userInput and return the commands.
+     * @return
+     * @throws DukeException
+     */
     public String[] parse() throws DukeException {
         return parse(userInput);
     }
@@ -38,6 +47,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Method to parse Commands with date.
+     * @param userInput
+     * @param identifier
+     * @return
+     * @throws DukeException
+     */
     private String[] parseCommandWithDate(String userInput, int identifier) throws DukeException {
         String identity = null;
         String description = null;
@@ -74,6 +90,13 @@ public class Parser {
         return new String[] {identity, description, date};
     }
 
+    /**
+     * Method to parse command with task index.
+     * @param userInput
+     * @param identifier
+     * @return
+     * @throws DukeException
+     */
     private String[] parseCommandWithTaskIndex(String userInput, int identifier) throws DukeException {
         String identity = null;
         int taskIndex = 0;
@@ -97,10 +120,22 @@ public class Parser {
         return new String[] {identity, String.valueOf(taskIndex)};
     }
 
+    /**
+     * Method to parse done command.
+     * @param userInput
+     * @return
+     * @throws DukeException
+     */
     private String[] parseDone(String userInput) throws DukeException {
         return parseCommandWithTaskIndex(userInput, 1);
     }
 
+    /**
+     * Method to parse todo Command.
+     * @param userInput
+     * @return
+     * @throws DukeException
+     */
     private String[] parseToDo(String userInput) throws DukeException {
         String description = null;
         if (userInput.length() < 6) {
@@ -111,18 +146,42 @@ public class Parser {
         return new String[] {"todo", description};
     }
 
+    /**
+     * Method to parse deadline Command.
+     * @param userInput
+     * @return
+     * @throws DukeException
+     */
     private String[] parseDeadline(String userInput) throws DukeException {
         return parseCommandWithDate(userInput, 1);
     }
 
+    /**
+     * Method to parse event Command.
+     * @param userInput
+     * @return
+     * @throws DukeException
+     */
     private String[] parseEvent(String userInput) throws DukeException {
         return parseCommandWithDate(userInput, 2);
     }
 
+    /**
+     * Method to parse delete Command.
+     * @param userInput
+     * @return
+     * @throws DukeException
+     */
     private String[] parseDelete(String userInput) throws DukeException {
         return  parseCommandWithTaskIndex(userInput, 2);
     }
 
+    /**
+     * Method to parse find Command.
+     * @param userInput
+     * @return
+     * @throws DukeException
+     */
     private String[] parseFind(String userInput) throws DukeException {
         String keyword = null;
         if (userInput.length() < 6) {

@@ -3,10 +3,16 @@ import java.util.Scanner;
 public class Ui {
     Scanner userInput;
 
+    /**
+     * Create a Ui object and take userInput.
+     */
     public Ui() {
         userInput = new Scanner(System.in);
     }
 
+    /**
+     * Output a long line with tabs.
+     */
     public void printLine() {
         System.out.println("    ____________________________________________________________");
     }
@@ -36,28 +42,51 @@ public class Ui {
         return fullCommand;
     }
 
+    /**
+     * print exception message.
+     * @param e
+     */
     public void printException(Exception e) {
         System.out.println("     ☹ Unexpected Error");
         System.out.println(e.toString());
     }
 
+    /**
+     * print DukeException message.
+     * @param de
+     */
     public void printDukeException(DukeException de) {
         System.out.println(de.getMessage());
     }
 
+    /**
+     * print exit message.
+     */
     public void printExit() {
         System.out.println("     Bye. Hope to see you again soon!");
     }
 
+    /**
+     * print task line.
+     * @param task
+     */
     public void printTaskLine(Task task) {
         System.out.print("       [" + task.getTaskLetter() + "][" + task.getStatusIcon() + "] ");
         System.out.println(task.getDescription() + task.getDate());
     }
 
+    /**
+     * print total task left.
+     * @param taskSize
+     */
     public void printTaskLeft(int taskSize) {
         System.out.println("     Now you have " + taskSize + " task" + (taskSize == 1 ? "" : "s") + " in the list");
     }
 
+    /**
+     * print the task currently completed.
+     * @param task
+     */
     public void printTaskComplete(Task task) {
         System.out.println("     Nice! I've marked this task as done:");
         printTaskLine(task);
@@ -85,6 +114,11 @@ public class Ui {
         printTaskLeft(taskSize);
     }
 
+    /**
+     * print the task String of the current taskIndex.
+     * @param task
+     * @param taskIndex
+     */
     private void printTaskString(Task task, int taskIndex) {
         System.out.print("     " + taskIndex + ".[" + task.getTaskLetter() + "][" + task.getStatusIcon() + "] ");
         System.out.println(task.getDescription() + task.getDate());
@@ -127,11 +161,19 @@ public class Ui {
         }
     }
 
+    /**
+     * print save errors.
+     * @param e
+     */
     public void printSaveError(Exception e) {
         System.out.println("     ☹ Save Error");
         System.out.println("     " + e.toString());
     }
 
+    /**
+     * print load errors.
+     * @param e
+     */
     public void printLoadError(Exception e) {
         System.out.println("     ☹ Load Error");
         System.out.println("     " + e.toString());
