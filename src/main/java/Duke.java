@@ -3,6 +3,20 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 
+import javafx.fxml.FXML;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
 /**
  * Class for Duke.
  */
@@ -10,6 +24,15 @@ public class Duke {
     private Storage storage;
     private Ui ui;
     private TaskList tasks;
+
+    private ScrollPane scrollPane;
+    private VBox dialogContainer;
+    private TextField userInput;
+    private Button sendButton;
+    private Scene scene;
+    private Image user = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
+    private Image duke = new Image(this.getClass().getResourceAsStream("/images/DaDuke.png"));
+
 
     /**
      * Main method for duke.
@@ -31,6 +54,12 @@ public class Duke {
             ui.printLoadError(e);
         }
     }
+
+
+    String getResponse(String input) {
+        return "Duke heard: " + input;
+    }
+
 
     /**
      * Main program loop.
